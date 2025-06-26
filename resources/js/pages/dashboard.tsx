@@ -26,7 +26,6 @@ export default function Dashboard() {
 
     const [resultLink, setResultLink] = useState<Link[]>();
     const [resultTag, setResultTag] = useState<Tag[]>();
-
     useEffect(() => {
         axios.get('/link')
             .then(res => {
@@ -36,7 +35,6 @@ export default function Dashboard() {
                 console.error('Error fetching links:', err);
             });
     }, []);
-
     useEffect(() => {
         axios.get('/tag')
             .then(res => {

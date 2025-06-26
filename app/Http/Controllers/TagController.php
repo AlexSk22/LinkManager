@@ -13,7 +13,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        return Auth::user()->tags;
+        return Auth::user()->tags()->with('links')->withCount('links')->get();
     }
 
     /**
@@ -29,7 +29,7 @@ class TagController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return Auth::user()->tags()->with('links')->withCount('links')->where('tagname', $id)->get();
     }
 
     /**

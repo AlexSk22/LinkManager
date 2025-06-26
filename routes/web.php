@@ -12,6 +12,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+    Route::get('links/{tagname}', function ($tagname) {
+        return Inertia::render('tag-folder',[
+            'tagname' => $tagname
+        ]);
+    })->name('links');
     Route::get('links', function () {
         return Inertia::render('links');
     })->name('links');

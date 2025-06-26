@@ -11,6 +11,7 @@ import { Link } from '@/types/link';
 import { Tag } from '@/types/tag';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
+import { Car } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -54,28 +55,68 @@ export default function Dashboard() {
 
             <Head title="Home" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-                {
-                    resultLink?.map(el =>
-                        <Card key={el.id}>
-                            <CardContent>
-                                <CardTitle>
-                                    {el.name}
-                                </CardTitle>
-                                <br />
-                                <CardDescription>
-                                    <a href={el.link}>{el.link}</a>
-                                </CardDescription>
-                                <br />
-                                <CardDescription className=''>
-                                    {el.tags.map(tag => (
-                                        <Badge className="m-1">{tag.tagname}</Badge>
-                                    ))}
-                                </CardDescription>
+                <Card>
+                    <CardContent>
+                        <CardTitle>
+                            Recent
+                        </CardTitle>
+                        <CardDescription>
 
-                            </CardContent>
-                        </Card>
-                    )
-                }
+                        </CardDescription>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 rounded-xl p-4 overflow-x-auto">
+
+                            {resultLink?.map(el =>
+                                <Card key={el.id}>
+                                    <CardContent>
+                                        <CardTitle>
+                                            {el.name}
+                                        </CardTitle>
+                                        <br />
+                                        <CardDescription>
+                                            <a href={el.link}>{el.link}</a>
+                                        </CardDescription>
+                                        <br />
+                                        <CardDescription>
+                                            {el.tags.map(tag => (
+                                                <Badge className="m-1">{tag.tagname}</Badge>
+                                            ))}
+                                        </CardDescription>
+                                    </CardContent>
+                                </Card>
+                            )}
+                        </div>
+
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardContent>
+                        <CardTitle>
+                            Tags
+                        </CardTitle>
+                        <CardDescription>
+
+                        </CardDescription>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 rounded-xl p-4 overflow-x-auto">
+
+                            {resultTag?.map(el =>
+                                <a href={'/links' + '/'+el.tagname}>
+                                    <Card>
+                                        <CardContent>
+                                            <CardTitle>
+                                                {el.tagname}
+                                            </CardTitle>
+                                            <br/>
+                                            <CardDescription>
+                                                Items {el.links_count}
+                                            </CardDescription>
+                                        </CardContent>
+                                    </Card>
+                                </a>
+                            )}
+                        </div>
+
+                    </CardContent>
+                </Card>
             </div>
         </AppLayout>
     );
