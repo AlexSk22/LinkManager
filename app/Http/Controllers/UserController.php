@@ -5,16 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class LinkController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Auth::user()->links()->with('tags')->get();
+        return Auth::user();
     }
-
 
     /**
      * Store a newly created resource in storage.
