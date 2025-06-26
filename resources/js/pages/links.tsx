@@ -1,17 +1,12 @@
-import AddLink from '@/components/add-link';
-import CardCounter from '@/components/card-counter';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
+import { MultiSelect } from '@/components/ui/multiselect';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Link } from '@/types/link';
 import { Tag } from '@/types/tag';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
-import { Car } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -23,13 +18,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 
 
-export default function Dashboard() {
+export default function Links() {
 
 
     const [resultLink, setResultLink] = useState<Link[]>();
     const [resultTag, setResultTag] = useState<Tag[]>();
-    const [searchString, setSearchString] = useState<string>();
-    const [searchTags, setSearchTags] = useState<Tag[]>();
+    const [selectedTags, setSelectedTags] = useState<string[]>();
 
     useEffect(() => {
         axios.get('/link')
@@ -50,6 +44,11 @@ export default function Dashboard() {
                 console.error('Error fetching links:', err);
             });
     }, []);
+
+    const tagOptions = resultTag?.map(tag => ({
+        value: tag.tagname,
+        label: tag.tagname,
+    })) || [];
     return (
         <AppLayout >
 
@@ -60,9 +59,6 @@ export default function Dashboard() {
                         <CardTitle>
                             Recent
                         </CardTitle>
-                        <CardDescription>
-
-                        </CardDescription>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 rounded-xl p-4 overflow-x-auto">
 
                             {resultLink?.map(el =>
@@ -77,8 +73,8 @@ export default function Dashboard() {
                                         </CardDescription>
                                         <br />
                                         <CardDescription>
-                                            {el.tags.map(tag => (
-                                                <Badge className="m-1">{tag.tagname}</Badge>
+                                            {el.tags.map((tag,i) => (
+                                                <Badge key={i} className="m-1">{tag.tagname}</Badge>
                                             ))}
                                         </CardDescription>
                                     </CardContent>
@@ -93,26 +89,47 @@ export default function Dashboard() {
                         <CardTitle>
                             Tags
                         </CardTitle>
-                        <CardDescription>
-
-                        </CardDescription>
+                        <div className='m-4 flex gap-5'>
+                            <MultiSelect
+                                options={tagOptions}
+                                onChange={(newValue) => {
+                                    setSelectedTags(newValue.map(el => el.value));
+                                }}></MultiSelect>
+                        </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 rounded-xl p-4 overflow-x-auto">
 
-                            {resultTag?.map(el =>
-                                <a href={'/links' + '/'+el.tagname}>
-                                    <Card>
-                                        <CardContent>
-                                            <CardTitle>
-                                                {el.tagname}
-                                            </CardTitle>
-                                            <br/>
-                                            <CardDescription>
-                                                Items {el.links_count}
-                                            </CardDescription>
-                                        </CardContent>
-                                    </Card>
-                                </a>
-                            )}
+                            {selectedTags && selectedTags.length > 0 ?
+                                resultTag?.filter(el => selectedTags.includes(el.tagname)).map((el,i) =>
+                                    <a  key={i} href={'/links' + '/' + el.tagname}>
+                                        <Card>
+                                            <CardContent>
+                                                <CardTitle>
+                                                    {el.tagname}
+                                                </CardTitle>
+                                                <br />
+                                                <CardDescription>
+                                                    Items {el.links_count}
+                                                </CardDescription>
+                                            </CardContent>
+                                        </Card>
+                                    </a>
+                                ) :
+                                resultTag?.map((el,i) =>
+                                    <a href={'/links' + '/' + el.tagname}  key={i}>
+                                        <Card>
+                                            <CardContent>
+                                                <CardTitle>
+                                                    {el.tagname}
+                                                </CardTitle>
+                                                <br />
+                                                <CardDescription>
+                                                    Items {el.links_count}
+                                                </CardDescription>
+                                            </CardContent>
+                                        </Card>
+                                    </a>
+                                )
+                            }
                         </div>
 
                     </CardContent>
