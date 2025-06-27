@@ -53,4 +53,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function tags(){
         return $this->hasMany(Tag::class);
     }
+    public function id(){
+        return $this->id;
+    }
 }

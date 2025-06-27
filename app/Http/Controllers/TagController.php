@@ -21,7 +21,17 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'tagname' => 'required|max:255',
+        ]);
+        Tag::create(
+            [
+                'tagname' => $request->input('tagname'),
+                'user_id' => Auth::user()->user_id,
+            ]
+        );
+
+
     }
 
     /**
