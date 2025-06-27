@@ -12,7 +12,15 @@ class UserController extends Controller
      */
     public function index()
     {
-        return Auth::user();
+        $user = Auth::user();
+        $linkCount = $user->links()->count();
+        $tagCount = $user->tags()->count();
+
+        return response()->json([
+            'user' => $user,
+            'link_count' => $linkCount,
+            'tag_count' => $tagCount
+        ]);
     }
 
     /**

@@ -1,14 +1,12 @@
 import AddLink from '@/components/add-link';
 import CardCounter from '@/components/card-counter';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Select } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Link } from '@/types/link';
 import { Tag } from '@/types/tag';
 import { Head } from '@inertiajs/react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
@@ -23,27 +21,26 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Dashboard() {
 
+    const [amountTags, setAmountTags] = useState<number>();
+    const [amountLinks, setAmountLinks] = useState<number>();
 
-    const [resultLink, setResultLink] = useState<Link[]>();
-    const [resultTag, setResultTag] = useState<Tag[]>();
-    useEffect(() => {
-        axios.get('/link')
-            .then(res => {
-                setResultLink(res.data);
+    const queryClient = useQueryClient();
+
+    const query = useQuery({
+        queryKey: ['Links'], queryFn: async () => {
+            return await axios.get('/user').then(res => {
+                setAmountLinks(res.data.link_count);
+                setAmountTags(res.data.tag_count);
             })
-            .catch(err => {
-                console.error('Error fetching links:', err);
-            });
-    }, []);
-    useEffect(() => {
-        axios.get('/tag')
-            .then(res => {
-                setResultTag(res.data);
-            })
-            .catch(err => {
-                console.error('Error fetching links:', err);
-            });
-    }, []);
+                .catch(err => {
+                    console.error('Error fetching links:', err);
+                });
+
+        }
+    });
+
+
+
     return (
         <AppLayout >
             <Head title="Home" />
@@ -57,8 +54,8 @@ export default function Dashboard() {
                     </CardContent>
                 </Card>
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <CardCounter title='Links' counter={resultLink?.length || 0} />
-                    <CardCounter title='Tags' counter={resultTag?.length || 0} />
+                    <CardCounter title='Links' counter={amountLinks || 0} />
+                    <CardCounter title='Tags' counter={amountTags || 0} />
                 </div>
             </div>
         </AppLayout>

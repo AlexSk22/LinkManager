@@ -5,11 +5,35 @@ import { MultiSelectCreate } from "./ui/multiselect-create";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Tag } from "@/types/tag";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function AddLink() {
     const [resultTag, setResultTag] = useState<Tag[] | null>();
     const [selectedTags, setSelectedTags] = useState<string[]>();
     const [send, setSend] = useState<number>(1);
+
+    const queryClient = useQueryClient();
+
+    async function submit(formData: FormData) {
+        const name = formData.get("Name");
+        const uri = formData.get("Uri");
+        const tags = formData.getAll("Tags");
+
+        const payload = {
+            name: name,
+            link: uri,
+            tags: tags,
+        };
+
+        await axios.post('/link', payload);
+    }
+
+    const mutation = useMutation({
+        mutationFn: submit,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['Links'] })
+        }
+    })
 
     useEffect(() => {
         axios.get('/tag')
@@ -27,32 +51,21 @@ export default function AddLink() {
         label: tag.tagname,
     })) || [];
 
-
-    const submit =(e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
         const formData = new FormData(e.currentTarget);
-
-        const name = formData.get("Name");
-        const uri = formData.get("Uri");
-
-        const payload = {
-            name : name,
-            link : uri,
-            tags: selectedTags,
-        };
-
-        axios.post('/link',payload);
-        console.log(payload);
+        mutation.mutate(formData);
 
         e.preventDefault();
         e.currentTarget.reset();
         setSelectedTags([]);
-        setSend(send+1);
-    }
+        setSend(send + 1);
+    };
 
     return (
 
         <form
-            onSubmit={submit}
+            onSubmit={handleSubmit}
         >
             <CardContent className='flex p-2 m-2 gap-5 w-full flex-col md:flex-row '>
 
