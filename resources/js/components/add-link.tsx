@@ -6,8 +6,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Tag } from "@/types/tag";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export default function AddLink() {
+
     const [resultTag, setResultTag] = useState<Tag[] | null>();
     const [selectedTags, setSelectedTags] = useState<string[]>();
     const [send, setSend] = useState<number>(1);
@@ -31,9 +33,15 @@ export default function AddLink() {
     const mutation = useMutation({
         mutationFn: submit,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['Links'] })
+            toast.success("Link added successfully!");
+            queryClient.invalidateQueries({ queryKey: ['Links'] });
+        },
+        onError: (error) => {
+            console.error("Submission failed:", error);
+            toast.error("Failed to add link. Please try again.");
         }
-    })
+    });
+
 
     useEffect(() => {
         axios.get('/tag')

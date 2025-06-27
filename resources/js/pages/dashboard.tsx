@@ -3,8 +3,6 @@ import CardCounter from '@/components/card-counter';
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Link } from '@/types/link';
-import { Tag } from '@/types/tag';
 import { Head } from '@inertiajs/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
