@@ -1,3 +1,4 @@
+import CardLink from '@/components/card-link';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -73,23 +74,7 @@ export default function Links() {
 
                             {
                                 [...resultLink || []].reverse().slice(0, 4).map((el) =>
-                                    <Card key={el.id}>
-                                        <CardContent>
-                                            <CardTitle>
-                                                {el.name}
-                                            </CardTitle>
-                                            <br />
-                                            <CardDescription>
-                                                <a href={el.link}>{el.link}</a>
-                                            </CardDescription>
-                                            <br />
-                                            <CardDescription>
-                                                {el.tags.map((tag, i) => (
-                                                    <Badge key={i} className="m-1">{tag.tagname}</Badge>
-                                                ))}
-                                            </CardDescription>
-                                        </CardContent>
-                                    </Card>
+                                    <CardLink key={el.id} link={el} />
                                 )}
                         </div>
 
@@ -110,22 +95,8 @@ export default function Links() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 rounded-xl p-4 overflow-x-auto">
 
                             {filteredLinks?.map((el) => (
-                                <Card key={el.id}>
-                                    <CardContent>
-                                        <CardTitle>{el.name}</CardTitle>
-                                        <br />
-                                        <CardDescription>
-                                            <a href={el.link}>{el.link}</a>
-                                        </CardDescription>
-                                        <br />
-                                        <CardDescription>
-                                            {el.tags.map((tag, i) => (
-                                                <Badge key={i} className="m-1">{tag.tagname}</Badge>
-                                            ))}
-                                        </CardDescription>
-                                    </CardContent>
-                                </Card>
-                            ))}
+                                <CardLink key={el.id} link={el} />
+                           ))}
                             {filteredLinks?.length === 0 && (
                                 <div>No links yet</div>
                             )}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Link;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -67,6 +68,15 @@ class LinkController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $article = Link::findOrFail($id);
+            $article->delete();
+            return response()->json(['message' => 'Link deleted successfully.'], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Link not found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while deleting the link.'], 500);
+        }
     }
+
 }
