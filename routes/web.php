@@ -13,13 +13,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
     Route::get('links/{tagname}', function ($tagname) {
-        return Inertia::render('tag-folder',[
+        return Inertia::render('tag-folder', [
             'tagname' => $tagname
         ]);
     })->name('links');
     Route::get('links', function () {
         return Inertia::render('links');
     })->name('links');
+    Route::get('tags', function () {
+        return Inertia::render('tags');
+    })->name('tags');
     Route::ApiResources([
         'tag' => TagController::class,
         'link' => LinkController::class,

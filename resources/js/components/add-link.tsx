@@ -21,12 +21,14 @@ export default function AddLink() {
         const uri = formData.get("Uri");
         const tags = formData.getAll("Tags");
 
+
         const payload = {
             name: name,
             link: uri,
             tags: tags,
         };
 
+        console.log(payload);
         await axios.post('/link', payload);
     }
 

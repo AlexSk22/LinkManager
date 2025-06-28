@@ -17,6 +17,11 @@ const mainNavItems: NavItem[] = [
         title: 'Links',
         href: '/links',
         icon: Album
+    },
+    {
+        title: 'Tags',
+        href: '/tags',
+        icon: Album
     }
 ];
 

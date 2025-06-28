@@ -42,8 +42,8 @@ class LinkController extends Controller
 
             // Attach tag to link
             $link->tags()->attach($tag->tagname, ['user_id' => Auth::id()]);
-            return response()->json(['message' => 'Link created with tags', 'link' => $link->load('tags')]);
         }
+        return response()->json(['message' => 'Link created with tags', 'link' => $link->load('tags')]);
     }
 
     /**
