@@ -6,6 +6,7 @@ use App\Models\Link;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LinkController extends Controller
 {
@@ -35,13 +36,11 @@ class LinkController extends Controller
         ]);
         $tags = $request->input('tags', []);
         foreach ($tags as $tagname) {
-            // Create the tag if it doesn't exist
             $tag = Tag::firstOrCreate(
                 ['tagname' => $tagname],
                 ['user_id' => Auth::user()->id()]
             );
 
-            // Attach tag to link
             $link->tags()->attach($tag->tagname, ['user_id' => Auth::id()]);
         }
         return response()->json(['message' => 'Link created with tags', 'link' => $link->load('tags')]);
@@ -60,7 +59,29 @@ class LinkController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'link' => 'required|max:255',
+        ]);
+
+        try {
+            $link = Auth::user()->links()->where('id', $id)->firstOrFail();
+
+            $link->update([
+                'name' => $request->input('name'),
+                'link' => $request->input('link'),
+            ]);
+
+
+            Log::info('new link id: '. $link->id .'name: '.    $link->name);
+
+            return response()->json(['message' => 'Link created with tags', 'link' => $link->load('tags')]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Link not found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while updating the link.'], 500);
+        }
+
     }
 
     /**

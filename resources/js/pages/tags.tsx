@@ -6,6 +6,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Link } from '@/types/link';
 import { Tag } from '@/types/tag';
 import { Head } from '@inertiajs/react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
@@ -20,20 +21,10 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Links() {
 
+    const queryClient = useQueryClient();
 
-    const [resultLink, setResultLink] = useState<Link[]>();
     const [resultTag, setResultTag] = useState<Tag[]>();
     const [selectedTags, setSelectedTags] = useState<string[]>();
-
-    useEffect(() => {
-        axios.get('/link')
-            .then(res => {
-                setResultLink(res.data);
-            })
-            .catch(err => {
-                console.error('Error fetching links:', err);
-            });
-    }, []);
 
     useEffect(() => {
         axios.get('/tag')
@@ -45,10 +36,24 @@ export default function Links() {
             });
     }, []);
 
+    const queryTags = useQuery({
+        queryKey: ['Tags'], queryFn: async () => {
+            return await axios.get('/tag')
+                .then(res => {
+                    setResultTag(res.data);
+                })
+                .catch(err => {
+                    console.error('Error fetching links:', err);
+                });
+
+        }
+    });
+
     const tagOptions = resultTag?.map(tag => ({
         value: tag.tagname,
         label: tag.tagname,
     })) || [];
+
     return (
         <AppLayout >
 

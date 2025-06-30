@@ -8,6 +8,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Link } from '@/types/link';
 import { Tag } from '@/types/tag';
 import { Head } from '@inertiajs/react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
@@ -28,6 +29,8 @@ export default function Links() {
     const [selectedTags, setSelectedTags] = useState<string[]>([]);
     const [searchString, setSearchString] = useState<string>("");
 
+    const queryClient = useQueryClient();
+
     useEffect(() => {
         axios.get('/link')
             .then(res => {
@@ -46,12 +49,39 @@ export default function Links() {
                 console.error('Error fetching links:', err);
             });
     }, []);
+
+    const queryLinks = useQuery({
+        queryKey: ['Links'], queryFn: async () => {
+            return await axios.get('/link')
+                .then(res => {
+                    setResultLink(res.data);
+                })
+                .catch(err => {
+                    console.error('Error fetching links:', err);
+                });
+
+        }
+    });
+
+    const queryTags = useQuery({
+        queryKey: ['Tags'], queryFn: async () => {
+            return await axios.get('/tag')
+            .then(res => {
+                setResultTag(res.data);
+            })
+            .catch(err => {
+                console.error('Error fetching links:', err);
+            });
+
+        }
+    });
+
     const tagOptions = resultTag?.map(tag => ({
         value: tag.tagname,
         label: tag.tagname,
     })) || [];
 
-    const filteredLinks = selectedTags.length > 0?
+    const filteredLinks = selectedTags.length > 0 ?
         resultLink
             ?.filter(el => el.name.toLowerCase().includes(searchString.toLowerCase()))
             .filter(el => el.tags.some(t => selectedTags.includes(t.tagname) && el.tags.length >= selectedTags.length))
@@ -96,7 +126,7 @@ export default function Links() {
 
                             {filteredLinks?.map((el) => (
                                 <CardLink key={el.id} link={el} />
-                           ))}
+                            ))}
                             {filteredLinks?.length === 0 && (
                                 <div>No links yet</div>
                             )}

@@ -55,6 +55,14 @@ class TagController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $tag = Tag::findOrFail($id);
+            $tag->delete();
+            return response()->json(['message' => 'Link deleted successfully.'], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Link not found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while deleting the link.'], 500);
+        }
     }
 }
