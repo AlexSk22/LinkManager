@@ -54,6 +54,62 @@ export default function Links() {
         label: tag.tagname,
     })) || [];
 
+
+    /*
+    async function remove() {
+        await axios.delete(`/link/${link.id}`);
+    }
+    async function edit() {
+        const payload = {
+            name: name,
+            link: url,
+        };
+        await axios.put(`/link/${link.id}`, payload);
+    }
+    const editMutation = useMutation({
+        mutationFn: edit,
+        onSuccess: () => {
+            toast.success("Link edited successfully!");
+            queryClient.invalidateQueries({ queryKey: ['Links'] });
+            setIsEditing(false);
+        },
+        onError: (error) => {
+            console.error("Submission failed:", error);
+            toast.error("Failed to edit link. Please try again.");
+        }
+    });
+
+    const removeMutation = useMutation({
+        mutationFn: remove,
+        onSuccess: () => {
+            toast.success("Link removed successfully!");
+            queryClient.invalidateQueries({ queryKey: ['Links'] });
+        },
+        onError: (error) => {
+            console.error("Submission failed:", error);
+            toast.error("Failed to remove link. Please try again.");
+        }
+    });
+
+    function HandleRemove() {
+        removeMutation.mutate();
+    }
+    function HandleEdit() {
+        if (isEditing) {
+            editMutation.mutate();
+            setIsEditing(false);
+            return;
+        }
+        setIsEditing(true);
+    }
+    function cancel() {
+        setIsEditing(false);
+        setName(link.name);
+        setUrl(link.link);
+    }
+
+    */
+
     return (
         <AppLayout >
 

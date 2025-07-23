@@ -47,7 +47,24 @@ class TagController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'tagname' => 'required|max:255',
+        ]);
+
+        try {
+            $link = Auth::user()->tags()->where('id', $id)->firstOrFail();
+
+            $link->update([
+                'tagname' => $request->input('tagname'),
+            ]);
+
+            return response()->json(['message' => 'tagname updated']);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Tag not founded.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred while updating the tag.'], 500);
+        }
+
     }
 
     /**

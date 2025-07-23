@@ -72,9 +72,6 @@ class LinkController extends Controller
                 'link' => $request->input('link'),
             ]);
 
-
-            Log::info('new link id: '. $link->id .'name: '.    $link->name);
-
             return response()->json(['message' => 'Link created with tags', 'link' => $link->load('tags')]);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['error' => 'Link not found.'], 404);
